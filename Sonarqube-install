@@ -1,0 +1,64 @@
+SonarQube Installation
+Prerequisite:
+●	AWS account
+●	Create a Redhat EC2 T2 Medium instance with 4 GB RAM
+●	Create security group and open required port 9000 etc
+●	In the port rules select All TCP
+●	Attach security group to the EC2 instance
+●	Install java open jdk 1.8+ for sonarqube version 7.8
+
+Installation:
+Step1:-
+#As a good security practice, Sonarqube Server is not advised to run sonar service as a root user
+# Create a new user called sonar and grant sudo access to manage sonar services as follows
+
+sudo useradd sonar
+# Grant sudo access to sonar user
+sudo echo "sonar ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/sonar
+# set hostname for the sonarqube server and switch to sonar
+sudo hostnamectl set-hostname sonar
+sudo su - sonar
+
+Step2:-
+# Assign password to sonar user
+sudo passwd sonar
+#Use this passwd jk*l*iht675
+
+Step3:-
+#Enable PasswordAuthentication in the server and restart sshd
+sudo sed -i "/^[^#]*PasswordAuthentication[[:space:]]no/c\PasswordAuthentication yes" /etc/ssh/sshd_config
+sudo service sshd restart
+
+Step4:-
+#Install Java JDK 1.8+ required for sonarqube to start
+cd /opt
+sudo yum -y install unzip wget git vim tree -y
+sudo yum install java-11-openjdk-devel -y
+
+Step5:-
+#Download and extract the SonarqQube Server software.
+sudo wget https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-7.8.zip
+sudo unzip sonarqube-7.8.zip
+sudo rm -rf sonarqube-7.8.zip
+sudo mv sonarqube-7.8 sonarqube
+
+Step6:-
+#Grant file permissions for sonar user to start and manage sonarQube
+sudo chown -R sonar:sonar /opt/sonarqube/
+sudo chmod -R 775 /opt/sonarqube/
+
+Step7:-
+#start sonarQube server and check its status
+sh /opt/sonarqube/bin/linux-x86-64/sonar.sh start
+sh /opt/sonarqube/bin/linux-x86-64/sonar.sh status
+
+Step8:-
+#Ensure that SonarQube is running and Access sonarQube on the browser
+sonarqube default port is = 9000
+Thus you can
+curl -v localhost:9000
+99.889.381.66:9000
+
+# If you are connecting to sonarqube for the first time you must uses the:-
+Default Username: admin
+Default Password: admin
